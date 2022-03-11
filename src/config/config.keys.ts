@@ -1,0 +1,4 @@
+export enum Configuration {
+  SCANIA_CLIENT_ID = 'SCANIA_CLIENT_ID',
+  SCANIA_SECRET_KEY = 'SCANIA_SECRET_KEY',
+}
