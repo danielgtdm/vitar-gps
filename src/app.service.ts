@@ -1,15 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { Vehiculo } from './scania/models';
 import { ScaniaService } from './scania/services/scania.service';
+import { SitrackService } from './sitrack/services/sitrack.service';
 
 @Injectable()
 export class AppService {
-  constructor(private _scaniaService: ScaniaService) {}
+  private vehiculos: Vehiculo[];
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  constructor(
+    private _scaniaService: ScaniaService,
+    private _sitrackService: SitrackService,
+  ) {}
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
   public async enviarPosicion() {
+    if (!this.vehiculos) {
+      this.vehiculos = (await this._scaniaService.getListaVehiculos()).Vehicle;
+    }
     const posicionActual =
       await this._scaniaService.getPosicionActualVehiculo();
+
+    this._sitrackService.enviarReportes(posicionActual, this.vehiculos);
+
+    // console.log(this.vehiculos[0].LicensePlate);
+
     process.stdout.write(
       'Enviando datos: ' +
         posicionActual.RequestServerDateTime +
