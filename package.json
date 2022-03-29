@@ -29,6 +29,7 @@
     "@types/crypto-js": "^4.1.1",
     "@types/qs": "^6.9.7",
     "crypto-js": "^4.1.1",
+    "date-format": "^4.0.6",
     "dotenv": "^16.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

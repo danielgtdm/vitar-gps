@@ -7,6 +7,7 @@ import { ConfigService } from 'src/config/config.service';
 import { PosicionActualVehiculo, Vehiculo } from 'src/scania/models';
 import { SitrackMessage } from '../models';
 
+var format = require('date-format');
 @Injectable()
 export class SitrackService {
   private apiKey: string;
@@ -33,15 +34,15 @@ export class SitrackService {
       },
     };
 
-    // mensajes.forEach(async (mensaje) => {
+    mensajes.forEach(async (mensaje) => {
+      this._httpService.post('/event/flow/message', mensaje, config).pipe(
+        catchError((e) => {
+          console.log(e);
 
-    //   this._httpService.post('/event/flow/message', mensaje, config).pipe(
-    //     catchError((e) => {
-    //       throw new HttpException(e.response.data, e.response.status);
-    //     }),
-    //   );
-
-    // });
+          throw new HttpException(e.response.data, e.response.status);
+        }),
+      );
+    });
   }
 
   private crearReporte(
@@ -51,11 +52,11 @@ export class SitrackService {
     let mensajes: SitrackMessage[] = [];
 
     reporte.VehiclePosition.forEach((vehiculo) => {
+      const fechaReporte = new Date(vehiculo.GNSSPosition.PositionDateTime);
+
       let message: SitrackMessage = new SitrackMessage();
       message.message = 'events.bx.gps.report.test';
-      message.time = new Date(
-        vehiculo.GNSSPosition.PositionDateTime,
-      ).toISOString();
+      message.time = format('yyyy-MM-dd hh:mm:ss', fechaReporte);
       message.eventType = 2; // parseInt(vehiculo.TriggerType);
       message.gpsDop = 1;
       message.gpsSatellites = 0;
@@ -76,9 +77,6 @@ export class SitrackService {
         .LicensePlate.replace(/-/g, '');
 
       mensajes.push(message);
-      console.log(
-        new Date(vehiculo.GNSSPosition.PositionDateTime).toLocaleString(),
-      );
     });
 
     return mensajes;
