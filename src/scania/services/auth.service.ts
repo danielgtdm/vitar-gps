@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression, Interval } from '@nestjs/schedule';
-import qs from 'qs';
 import { stringify } from 'querystring';
 import { firstValueFrom } from 'rxjs';
 import { Configuration } from 'src/config/config.keys';
@@ -44,8 +43,6 @@ export class AuthService {
   }
 
   private async getChallenge() {
-    process.stdout.write('Obteniendo el reto de Scania...\r');
-
     const response = await firstValueFrom(
       this._httpService.post(
         'https://fmsauth.scania.com/auth/S2S4DA/ClientId2Challenge',
@@ -72,7 +69,6 @@ export class AuthService {
 
   @Cron('0 0-23/1 * * *')
   private async refreshTokens() {
-    process.stdout.write('Refrescando token...\r');
     const response = await firstValueFrom(
       this._httpService.post(
         'https://fmsauth.scania.com/auth/S2S4DA/RefreshToken',
