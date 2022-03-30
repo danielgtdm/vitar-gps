@@ -13,7 +13,6 @@ export class ResolveChallengeService {
   }
 
   public createChallengeResponse(challenge: string) {
-    process.stdout.write('Resolviendo reto...\r');
     const secretKeyArr = this.base64url_decode(this.secretKey);
     const challengeArr = this.base64url_decode(challenge);
     const challengeResponse = HmacSHA256(challengeArr, secretKeyArr);
@@ -46,7 +45,6 @@ export class ResolveChallengeService {
       default:
         console.log('Illegal base64url string!');
     }
-    console.clear();
     return enc.Base64.parse(s);
   }
 }
