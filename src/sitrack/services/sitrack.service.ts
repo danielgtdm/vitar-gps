@@ -55,15 +55,15 @@ export class SitrackService {
       const fechaReporte = new Date(vehiculo.GNSSPosition.PositionDateTime);
 
       let message: SitrackMessage = new SitrackMessage();
-      message.message = 'events.bx.gps.report.test';
+      message.message = 'events.bx.gps.report';
       message.time = format('yyyy-MM-dd hh:mm:ss', fechaReporte);
-      message.eventType = 2; // parseInt(vehiculo.TriggerType);
-      message.gpsDop = 1;
-      message.gpsSatellites = 0;
+      message.eventType = 2; // Default Scania [TIMER]
+      message.gpsDop = 1; // Default Scania [No Disponible]
+      message.gpsSatellites = 0; // Default Scania [No Disponible]
       message.gpsSpeed = vehiculo.GNSSPosition.Speed;
       message.heading = vehiculo.GNSSPosition.Heading;
       message.hourmeter = 0;
-      message.ignition = true;
+      message.ignition = true; // Default Scania [No Disponible]
       message.latitude = vehiculo.GNSSPosition.Latitude;
       message.longitude = vehiculo.GNSSPosition.Longitude;
       //message.location = ''; [OPCIONAL]
