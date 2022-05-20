@@ -67,7 +67,7 @@ export class AuthService {
     this._scaniaService.token = this.token;
   }
 
-  @Cron('0 0-23/1 * * *')
+  @Cron('0 */30 * * * *')
   private async refreshTokens() {
     const response = await firstValueFrom(
       this._httpService.post(
