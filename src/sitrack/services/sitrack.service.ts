@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable } from '@nestjs/common';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Configuration } from 'src/config/config.keys';
 import { ConfigService } from 'src/config/config.service';
@@ -21,7 +21,7 @@ export class SitrackService {
   public async enviarReportes(
     reporte: PosicionActualVehiculo,
     vehiculos: Vehiculo[],
-  ) {
+  ): Promise<void> {
     const mensajes = this.crearReporte(reporte, vehiculos);
 
     const config: AxiosRequestConfig = {
@@ -35,13 +35,22 @@ export class SitrackService {
     };
 
     mensajes.forEach(async (mensaje) => {
-      this._httpService.post('/event/flow/message', mensaje, config).pipe(
-        catchError((e) => {
-          console.log(e);
+      // this._httpService.post('/event/flow/message', mensaje, config).pipe(
+      //  catchError((e) => {
+      //    console.log(e);
+      //
+      //   throw new HttpException(e.response.data, e.response.status);
+      //  }),
+      // );
 
-          throw new HttpException(e.response.data, e.response.status);
-        }),
+      const res = await firstValueFrom(
+        this._httpService.post('/event/flow/message', mensaje, config),
       );
+      console.log({
+        triggerDate: res.data.triggerDate,
+        triggerId: res.data.triggerId,
+        status: res.status,
+      });
     });
   }
 

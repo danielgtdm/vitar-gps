@@ -21,6 +21,6 @@ export class AppService {
     const posicionActual =
       await this._scaniaService.getPosicionActualVehiculo();
 
-    this._sitrackService.enviarReportes(posicionActual, this.vehiculos);
+    await this._sitrackService.enviarReportes(posicionActual, this.vehiculos);
   }
 }
